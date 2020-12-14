@@ -6,30 +6,28 @@ using Azure.Search.Documents.Indexes.Models;
 using Azure.Search.Documents.Models;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace CodeSample
 {
     /*
      * Environment Variables Used:
      *     MSREAD_ENDPOINT
      *     MSREAD_KEY
-     *     TEXT_ANALYTICS_ENDPOINT
-     *     TEXT_ANALYTICS_KEY
+     *     COGNITIVE_SEARCH_KEY
+     *     COGNITIVE_SEARCH_ENDPOINT
      */
     class Program
     {
         static async Task Main(string[] args)
         {
             var reviewText = "The quality of the pictures are good, but the body is not durable";
-            var productId = "321";
-            var reviewId = "321";
+            var productId = "1"; // ID of the product reviewed
+            var reviewId = "1"; // ID of the review used as the search document ID
             var indexName = "sample-index";
 
-            // Intiialize search clients
+            // Cognitive Search credentials
             var searchKey = Environment.GetEnvironmentVariable("COGNITIVE_SEARCH_KEY");
             var searchEndpoint = Environment.GetEnvironmentVariable("COGNITIVE_SEARCH_ENDPOINT");
             Uri searchUri = new Uri(searchEndpoint);
@@ -43,11 +41,13 @@ namespace ConsoleApp1
             // Initialize Search client
             var searchClient = new SearchClient(searchUri, indexName, searchCredential);
 
-            // Initialize TA client
+            // TA credentials
             var textAnalyticsKey = Environment.GetEnvironmentVariable("TEXT_ANALYTICS_KEY");
             var textAnalyticsEndpoint = Environment.GetEnvironmentVariable("TEXT_ANALYTICS_ENDPOINT");
             var textAnalyticsCredentials = new AzureKeyCredential(textAnalyticsKey);
             var textAnalyticsUri = new Uri(textAnalyticsEndpoint);
+
+            // Initialize TA client
             var textAnalyticsClient = new TextAnalyticsClient(textAnalyticsUri, textAnalyticsCredentials);
 
             // Enable opinion mining
@@ -56,7 +56,7 @@ namespace ConsoleApp1
             // Call TA analyze sentiment api
             var sentimentResponse = await textAnalyticsClient.AnalyzeSentimentAsync(reviewText, language: "en", options: options);
 
-            // map opinions
+            // Map to review search document
             Review review = CreateReviewDocument(productId, reviewId, sentimentResponse);
 
             // Upload document

@@ -1,17 +1,14 @@
 ﻿using Azure.Search.Documents.Indexes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ConsoleApp1
+namespace CodeSample
 {
-    public class Aspect
+    public class Opinion
     {
         [SearchableField(IsFilterable = true, IsFacetable = true)]
-        public string Name { get; set; }
+        public string Text { get; set; }
         [SearchableField(IsFilterable = true, IsFacetable = true)]
         public string Sentiment { get; set; }
-        [SearchableField]
-        public Opinion[] Opinions { get; set; }
+        [SimpleField(IsFilterable = true)]
+        public bool IsNegated { get; set; }
     }
 }

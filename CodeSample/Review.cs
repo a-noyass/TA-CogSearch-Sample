@@ -1,9 +1,6 @@
 ﻿using Azure.Search.Documents.Indexes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ConsoleApp1
+namespace CodeSample
 {
     public class Review
     {
